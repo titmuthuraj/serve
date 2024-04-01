@@ -1,14 +1,22 @@
 name: KServe CPU Nightly Tests
 
 on:
+  pull_request:
+    branches: [master, release*]
+    paths:
+      - "**"
+      - "!.github/**"
+      - "!docs/**"
+      - "!**.md"
+      - ".github/workflows/kserve_cpu_tests.yml"
   workflow_dispatch:
   # runs everyday  at 5:15am
-  schedule:
-    - cron:  '15 5 * * *'
+  # schedule:
+  #   - cron:  '15 5 * * *'
 
 jobs:
   kserve-cpu-tests:
-    runs-on: [self-hosted, regression-test-gpu]
+    runs-on: ubuntu-latest
     steps:
       - name: Clean up previous run
         run: |
@@ -39,7 +47,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: kserve/kserve
-          ref: v0.11.1
+          ref: v0.11.2
           path: kserve
       - name: Validate torchserve-kfs and Open Inference Protocol
         run: ./kubernetes/kserve/tests/scripts/test_mnist.sh
